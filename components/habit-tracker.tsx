@@ -127,18 +127,12 @@ export default function HabitTracker() {
       </div>
 
       <Tabs defaultValue="habits" className="space-y-4">
-        <div className="flex justify-center w-full">
-          <TabsList className="[@media(max-width:400px)]:h-9">
-            <TabsTrigger
-              value="habits"
-              className="[@media(max-width:400px)]:text-xs [@media(max-width:400px)]:px-2 [@media(max-width:400px)]:h-8"
-            >
+        <div className="flex justify-start w-full">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="habits" className="flex-1 sm:flex-initial">
               Habits
             </TabsTrigger>
-            <TabsTrigger
-              value="stats"
-              className="[@media(max-width:400px)]:text-xs [@media(max-width:400px)]:px-2 [@media(max-width:400px)]:h-8"
-            >
+            <TabsTrigger value="stats" className="flex-1 sm:flex-initial">
               Statistics
             </TabsTrigger>
           </TabsList>

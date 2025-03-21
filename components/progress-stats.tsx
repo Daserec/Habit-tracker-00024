@@ -142,7 +142,10 @@ export function ProgressStats({ habits }: ProgressStatsProps) {
               config={{
                 completed: {
                   label: "Completed",
-                  color: "hsl(var(--chart-1))",
+                  theme: {
+                    light: "hsl(var(--foreground))",
+                    dark: "hsl(var(--foreground))",
+                  },
                 },
               }}
               className="w-full h-full"

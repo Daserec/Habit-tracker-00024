@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Trash, Search, Activity, Brain, Book, Heart, Zap, MoreHorizontal, Check, Edit, X } from "lucide-react"
+import { Trash, Search, Activity, Brain, Book, Heart, Zap, MoreHorizontal, Check, Edit, X, FilterX } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -101,6 +101,11 @@ export function HabitList({ habits, toggleHabit, deleteHabit, editHabit }: Habit
     setSearchTerm("")
   }
 
+  const clearAllFilters = () => {
+    setSearchTerm("")
+    setFilter(null)
+  }
+
   const filteredHabits = habits
     .filter(
       (habit) =>
@@ -108,6 +113,8 @@ export function HabitList({ habits, toggleHabit, deleteHabit, editHabit }: Habit
         habit.description.toLowerCase().includes(searchTerm.toLowerCase()),
     )
     .filter((habit) => filter === null || habit.category === filter)
+
+  const hasActiveFilters = searchTerm !== "" || filter !== null
 
   return (
     <div className="space-y-4">
@@ -131,7 +138,7 @@ export function HabitList({ habits, toggleHabit, deleteHabit, editHabit }: Habit
             </button>
           )}
         </div>
-        <Select defaultValue="all" onValueChange={handleFilterChange}>
+        <Select defaultValue="all" onValueChange={handleFilterChange} value={filter === null ? "all" : filter}>
           <SelectTrigger className="w-full sm:w-[180px] h-10">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
@@ -152,20 +159,30 @@ export function HabitList({ habits, toggleHabit, deleteHabit, editHabit }: Habit
           {habits.length === 0 ? (
             <p className="text-muted-foreground">No habits found. Add a new habit to get started!</p>
           ) : (
-            <p className="text-muted-foreground">
-              There are no habits that match the search and/or filtering you applied.
-            </p>
+            <>
+              <p className="text-muted-foreground mb-4">
+                There are no habits that match the search and/or filtering you applied.
+              </p>
+              {hasActiveFilters && (
+                <Button variant="outline" onClick={clearAllFilters} className="flex items-center gap-2">
+                  <FilterX className="h-4 w-4" />
+                  Clear all filters
+                </Button>
+              )}
+            </>
           )}
         </div>
       ) : (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredHabits.map((habit) => (
             <Card key={habit.id} className="overflow-hidden h-full flex flex-col">
               <CardHeader className="pb-2">
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
                   <div>
                     <CardTitle className="flex items-center gap-2">{habit.name}</CardTitle>
-                    <CardDescription className="mt-1">{habit.description || "No description"}</CardDescription>
+                    <CardDescription className="mt-1 whitespace-pre-wrap break-words">
+                      {habit.description || "No description"}
+                    </CardDescription>
                   </div>
                   <Badge variant="outline" className="flex items-center gap-1 shrink-0">
                     {getCategoryIcon(habit.category)}
