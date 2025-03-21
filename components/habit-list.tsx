@@ -3,7 +3,7 @@
 import { useState } from "react"
 import type { Habit } from "@/types/habit"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Trash, Search, Activity, Brain, Book, Heart, Zap, MoreHorizontal, Check, Edit, X, FilterX } from "lucide-react"
@@ -175,7 +175,7 @@ export function HabitList({ habits, toggleHabit, deleteHabit, editHabit }: Habit
       ) : (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredHabits.map((habit) => (
-            <Card key={habit.id} className="overflow-hidden h-full flex flex-col">
+            <Card key={habit.id} className="flex flex-col h-full">
               <CardHeader className="pb-2">
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
                   <div>
@@ -190,51 +190,56 @@ export function HabitList({ habits, toggleHabit, deleteHabit, editHabit }: Habit
                   </Badge>
                 </div>
               </CardHeader>
+
               <CardContent className="flex-grow">
-                <div className="flex flex-col gap-3">
-                  <div>
+                {/* Empty content area that grows to push everything else to the bottom */}
+              </CardContent>
+
+              <div className="px-6 pb-4">
+                <Button
+                  variant={habit.completedDates.includes(getToday()) ? "default" : "outline"}
+                  size="sm"
+                  className="h-8 px-3 w-full"
+                  onClick={() => toggleHabit(habit.id)}
+                >
+                  {habit.completedDates.includes(getToday()) ? (
+                    <>
+                      <Check className="mr-1 h-4 w-4" />
+                      Completed
+                    </>
+                  ) : (
+                    "Mark complete"
+                  )}
+                </Button>
+              </div>
+
+              <CardFooter className="pt-2 border-t flex items-center min-h-[48px]">
+                <div className="flex justify-between items-center w-full">
+                  <div className="flex items-center">
+                    <span className="text-sm text-muted-foreground">{getStreak(habit.completedDates)} day streak</span>
+                  </div>
+                  <div className="flex items-center gap-1">
                     <Button
-                      variant={habit.completedDates.includes(getToday()) ? "default" : "outline"}
-                      size="sm"
-                      className="h-8 px-3 w-full"
-                      onClick={() => toggleHabit(habit.id)}
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-primary h-8 w-8 flex items-center justify-center"
+                      onClick={() => editHabit(habit.id)}
                     >
-                      {habit.completedDates.includes(getToday()) ? (
-                        <>
-                          <Check className="mr-1 h-4 w-4" />
-                          Completed
-                        </>
-                      ) : (
-                        "Mark complete"
-                      )}
+                      <Edit className="h-4 w-4" />
+                      <span className="sr-only">Edit habit</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-primary h-8 w-8 flex items-center justify-center"
+                      onClick={() => showDeleteConfirm(habit.id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                      <span className="sr-only">Delete habit</span>
                     </Button>
                   </div>
-
-                  <div className="flex justify-between items-center mt-auto">
-                    <span className="text-sm text-muted-foreground">{getStreak(habit.completedDates)} day streak</span>
-                    <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-primary h-8 w-8"
-                        onClick={() => editHabit(habit.id)}
-                      >
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit habit</span>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:text-destructive h-8 w-8"
-                        onClick={() => showDeleteConfirm(habit.id)}
-                      >
-                        <Trash className="h-4 w-4" />
-                        <span className="sr-only">Delete habit</span>
-                      </Button>
-                    </div>
-                  </div>
                 </div>
-              </CardContent>
+              </CardFooter>
             </Card>
           ))}
         </div>
